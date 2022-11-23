@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    String @id @default(uuid())
+  name  String
+  email String @unique
+
+  projects Project[]
+  roles    Roles[]
+
+  @@map("users")
+}
+
+model Project {
+  id     String @id @default(uuid())
+  name   String
+  userId String
+
+  finance ProjectFinance?
+  user    User            @relation(fields: [userId], references: [id])
+
+  @@map("projects")
+}
+
+model ProjectFinance {
+  id           String @id @default(uuid())
+  priceInCents Int    @map("price_in_cents")
+  projectId    String @unique
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@map("project_finance")
+}
+
+model Roles {
+  id          String @id @default(uuid())
+  name        String @unique
+  permissions String
+  userId      String
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("roles")
+}
