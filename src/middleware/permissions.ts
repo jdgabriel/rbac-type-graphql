@@ -7,6 +7,7 @@ export function can(
   options?: { nullable: boolean }
 ): MiddlewareFn {
   return async ({ args }, next) => {
+    // TODO Remove user_id from args, implements JWT Token
     const { user_id } = args;
 
     const wherePermissions = permissions.map((perm) => ({
